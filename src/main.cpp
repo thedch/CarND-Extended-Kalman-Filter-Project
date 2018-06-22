@@ -108,7 +108,6 @@ int main() {
           fusionEKF.ProcessMeasurement(meas_package);
 
           // Push the current estimated x,y positon from the Kalman filter's state vector
-
           VectorXd estimate(4);
 
           double p_x = fusionEKF.ekf_.x_(0);
