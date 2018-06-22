@@ -27,6 +27,7 @@ void KalmanFilter::Predict() {
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
+  // This is for a LIDAR measurment, no need to linearize
   VectorXd z_pred = H_ * x_;
   VectorXd y = z - z_pred;
   MatrixXd Ht = H_.transpose();
@@ -43,6 +44,7 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
+  // This is for a RADAR measurement, which is in polar coords -> must linearize
   /**
   TODO:
     * update the state by using Extended Kalman Filter equations
