@@ -22,16 +22,6 @@ KalmanFilter::KalmanFilter() {
 
 KalmanFilter::~KalmanFilter() {}
 
-void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
-                        MatrixXd &H_in, MatrixXd &R_in, MatrixXd &Q_in) {
-  x_ = x_in; // current state (pose)
-  P_ = P_in; // state covariance matrix
-  F_ = F_in; // state transition matrix (holds delta T)
-  H_ = H_in; // measurement matrix (maps state space to measurement space)
-  // R_ = R_in; // measurement covariance matrix
-  Q_ = Q_in; // process covariance matrix
-}
-
 void KalmanFilter::Predict() {
   x_ = F_ * x_; // update current position using delta T
   MatrixXd Ft = F_.transpose();
