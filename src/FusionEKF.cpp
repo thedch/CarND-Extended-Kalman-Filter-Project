@@ -40,26 +40,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.x_ << 0, 0, 0, 0;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      /**
-      Convert radar from polar to Cartesian coordinates and initialize state.
-      */
-
-      // TODO: Manually call atan and sqrt instead of doing the Jacobian
-
-      // float px = measurement_pack.raw_measurements_(0);
-      // float py = measurement_pack.raw_measurements_(1);
-      // float vx = measurement_pack.raw_measurements_(2);
-      // float vy = measurement_pack.raw_measurements_(3);
-      // if (px == 0 && py == 0) {
-      //   cout << "Divide by zero error!" << endl;
-      // }
-      // float px2 = pow(px, 2);
-      // float py2 = pow(py, 2);
-      // Hj_ << px / sqrt(px2 + py2), py / sqrt(px2 + py2), 0, 0,
-      //     -py / (px2 + py2), px / (px2 + py2), 0, 0,
-      //     py*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px / sqrt(px2 + py2), py / sqrt(px2 + py2);
-
-      // ekf_.x_ = Hj_ * measurement_pack.raw_measurements_;
+      int rho = measurement_pack.raw_measurements_(0);
+      int theta = measurement_pack.raw_measurements_(1);
+      ekf_.x_(0) = rho * cos(theta); // rho * cos(theta)
+      ekf_.x_(1) = rho * sin(theta); // rho * sin(theta)
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       ekf_.x_(0) = measurement_pack.raw_measurements_(0);
