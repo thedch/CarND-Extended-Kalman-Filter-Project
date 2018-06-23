@@ -25,7 +25,8 @@ class KalmanFilter {
     // the lidar sensor only measures position
 
     // measurement covariance matrix
-    Eigen::MatrixXd R_;
+    Eigen::MatrixXd R_laser_;
+    Eigen::MatrixXd R_radar_;
 
     /**
      * Constructor

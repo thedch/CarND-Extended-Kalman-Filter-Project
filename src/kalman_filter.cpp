@@ -4,10 +4,21 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-// Please note that the Eigen library does not initialize
-// VectorXd or MatrixXd objects with zeros upon creation.
+KalmanFilter::KalmanFilter() {
+  R_radar_ = MatrixXd(3, 3);
+  R_radar_ << 0.09, 0, 0,
+              0, 0.0009, 0,
+              0, 0, 0.09;
 
-KalmanFilter::KalmanFilter() {}
+  R_laser_ = MatrixXd(2, 2);
+  R_laser_ << 0.0225, 0,
+              0, 0.0225;
+
+  H_ = MatrixXd(2, 4); // Project current state -> LIDAR measurement space
+  H_ << 1, 0, 0, 0,
+        0, 1, 0, 0;
+
+}
 
 KalmanFilter::~KalmanFilter() {}
 
@@ -17,7 +28,7 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   P_ = P_in; // state covariance matrix
   F_ = F_in; // state transition matrix (holds delta T)
   H_ = H_in; // measurement matrix (maps state space to measurement space)
-  R_ = R_in; // measurement covariance matrix
+  // R_ = R_in; // measurement covariance matrix
   Q_ = Q_in; // process covariance matrix
 }
 
@@ -30,11 +41,7 @@ void KalmanFilter::Predict() {
 void KalmanFilter::Update(const VectorXd &z) {
   // This is for a LIDAR measurment, no need to linearize
 
-  //measurement covariance matrix - laser
-  MatrixXd R_laser_ = MatrixXd(2, 2);
-  R_laser_ << 0.0225, 0,
-              0, 0.0225;
-
+  // measurement covariance matrix - laser
   VectorXd z_pred = H_ * x_;
   VectorXd y = z - z_pred; // TODO: y = z - H*x
   MatrixXd Ht = H_.transpose();
@@ -54,6 +61,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   TODO:
     * update the state using Extended Kalman Filter equations
   */
+
+  // measurement covariance matrix - laser
   MatrixXd Hj(3, 4);
   float px = x_(0);
   float py = x_(1);
@@ -72,11 +81,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
         py*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px / sqrt(px2 + py2), py / sqrt(px2 + py2);
 
   // measurement covariance matrix - radar
-  MatrixXd R_radar_ = MatrixXd(3, 3);
-  R_radar_ << 0.09, 0, 0,
-              0, 0.0009, 0,
-              0, 0, 0.09;
-
   VectorXd z_pred = Hj * x_;
   VectorXd y = z - z_pred; // TODO: y = z - H*x
   MatrixXd Ht = Hj.transpose();

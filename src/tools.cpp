@@ -20,19 +20,14 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
     }
 
     // accumulate squared residuals
-    for (int i = 0; i < estimations.size(); ++i) {
+    for (unsigned int i = 0; i < estimations.size(); ++i) {
         VectorXd diff = estimations[i] - ground_truth[i];
         diff = diff.array() * diff.array();
         rmse += diff;
     }
 
-    // calculate the mean
-    rmse = rmse / estimations.size();
-
-    // calculate the squared root
+    rmse = rmse / estimations.size(); // calculate the mean
     rmse = rmse.array().sqrt();
-
-    // return the result
     return rmse;
 }
 
@@ -54,8 +49,8 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
     float px2 = pow(px, 2);
     float py2 = pow(py, 2);
     Hj << px / sqrt(px2 + py2), py / sqrt(px2 + py2), 0, 0,
-    -py / (px2 + py2), px / (px2 + py2), 0, 0,
-    py*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px / sqrt(px2 + py2), py / sqrt(px2 + py2);
+          -py / (px2 + py2), px / (px2 + py2), 0, 0,
+          py*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px / sqrt(px2 + py2), py / sqrt(px2 + py2);
 
     return Hj;
 }
