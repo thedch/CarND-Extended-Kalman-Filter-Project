@@ -25,10 +25,10 @@ FusionEKF::FusionEKF() {
   */
   // TODO: Move these to kalman filter constructor
   ekf_.P_ = MatrixXd(4, 4); // Initialize the state covariance matrix
-  ekf_.P_ << 1, 1, 1, 1,
-             1, 1, 1, 1,
-             1, 1, 1, 1,
-             1, 1, 1, 1;
+  ekf_.P_ << 0, 0, 0, 0,
+             0, 0, 0, 0,
+             0, 0, 0, 0,
+             0, 0, 0, 0;
 
   ekf_.F_ = MatrixXd(4, 4); // Initialize the state transition matrix
   ekf_.F_ << 1, 0, 0, 0,
