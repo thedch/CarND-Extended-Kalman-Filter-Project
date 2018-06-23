@@ -17,16 +17,17 @@ class KalmanFilter {
     // process covariance matrix
     Eigen::MatrixXd Q_;
 
+    // measurement covariance matrix
+    Eigen::MatrixXd R_laser_;
+    Eigen::MatrixXd R_radar_;
+
     // measurement matrix
     Eigen::MatrixXd H_laser_;
+    Eigen::MatrixXd H_radar_;
     // H is the matrix that projects your belief about the object's current state
     // into the measurement space of the sensor. For lidar, this is a fancy way of
     // saying that we discard velocity information from the state variable since
     // the lidar sensor only measures position
-
-    // measurement covariance matrix
-    Eigen::MatrixXd R_laser_;
-    Eigen::MatrixXd R_radar_;
 
     KalmanFilter();
 

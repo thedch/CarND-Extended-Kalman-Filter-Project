@@ -14,6 +14,8 @@ KalmanFilter::KalmanFilter() {
   R_laser_ << 0.0225, 0,
               0, 0.0225;
 
+  H_radar_ = MatrixXd(3, 4);
+
   H_laser_ = MatrixXd(2, 4);
   H_laser_ << 1, 0, 0, 0, // Project the current state -> LIDAR measurement space
               0, 1, 0, 0;
@@ -44,8 +46,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   // This is for a LIDAR measurment, no need to linearize
 
   // measurement covariance matrix - laser
-  VectorXd z_pred = H_laser_ * x_;
-  VectorXd y = z - z_pred; // TODO: y = z - H*x
+  VectorXd y = z - H_laser_ * x_;
   MatrixXd Ht = H_laser_.transpose();
   MatrixXd S = H_laser_ * P_ * Ht + R_laser_;
   MatrixXd Si = S.inverse();
