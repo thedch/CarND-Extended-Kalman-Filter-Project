@@ -18,6 +18,18 @@ KalmanFilter::KalmanFilter() {
   H_laser_ << 1, 0, 0, 0, // Project the current state -> LIDAR measurement space
               0, 1, 0, 0;
 
+  P_ = MatrixXd(4, 4); // Initialize the state covariance matrix
+  P_ << 0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0;
+
+  F_ = MatrixXd(4, 4); // Initialize the state transition matrix
+  F_ << 1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1;
+
 }
 
 KalmanFilter::~KalmanFilter() {}
@@ -53,7 +65,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   */
 
   // measurement covariance matrix - laser
-  MatrixXd Hj(3, 4);
   float px = x_(0);
   float py = x_(1);
   float vx = x_(2);
@@ -66,6 +77,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
   float px2 = pow(px, 2);
   float py2 = pow(py, 2);
+
+  MatrixXd Hj(3, 4);
   Hj << px / sqrt(px2 + py2), py / sqrt(px2 + py2), 0, 0,
         -py / (px2 + py2), px / (px2 + py2), 0, 0,
         py*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px / sqrt(px2 + py2), py / sqrt(px2 + py2);
