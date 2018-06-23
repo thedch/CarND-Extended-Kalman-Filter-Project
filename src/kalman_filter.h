@@ -18,7 +18,7 @@ class KalmanFilter {
     Eigen::MatrixXd Q_;
 
     // measurement matrix
-    Eigen::MatrixXd H_;
+    Eigen::MatrixXd H_laser_;
     // H is the matrix that projects your belief about the object's current state
     // into the measurement space of the sensor. For lidar, this is a fancy way of
     // saying that we discard velocity information from the state variable since

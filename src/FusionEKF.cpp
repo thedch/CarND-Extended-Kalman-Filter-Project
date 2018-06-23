@@ -13,11 +13,6 @@ FusionEKF::FusionEKF() {
 
   previous_timestamp_ = 0;
 
-  // initializing matrices
-  // H_laser_ = MatrixXd(2, 4);
-  Hj_ = MatrixXd(3, 4);
-
-
   /**
   TODO:
     * Finish initializing the FusionEKF.
@@ -51,7 +46,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       * Create the covariance matrix.
       * Remember: you'll need to convert radar from polar to Cartesian coordinates.
     */
-    // first measurement
+
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 0, 0, 1, 0;
@@ -60,7 +55,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Convert radar from polar to Cartesian coordinates and initialize state.
       */
+
       // TODO: Manually call atan and sqrt instead of doing the Jacobian
+
       // float px = measurement_pack.raw_measurements_(0);
       // float py = measurement_pack.raw_measurements_(1);
       // float vx = measurement_pack.raw_measurements_(2);
@@ -77,9 +74,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       // ekf_.x_ = Hj_ * measurement_pack.raw_measurements_;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-      ekf_.H_ = MatrixXd(2, 4);
-      ekf_.H_ << 1, 0, 0, 0,
-                 0, 1, 0, 0;
       ekf_.x_(0) = measurement_pack.raw_measurements_(0);
       ekf_.x_(1) = measurement_pack.raw_measurements_(1);
     }
