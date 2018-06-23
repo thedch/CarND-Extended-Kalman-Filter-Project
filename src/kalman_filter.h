@@ -28,20 +28,13 @@ class KalmanFilter {
     Eigen::MatrixXd R_laser_;
     Eigen::MatrixXd R_radar_;
 
-    /**
-     * Constructor
-     */
     KalmanFilter();
 
-    /**
-     * Destructor
-     */
     virtual ~KalmanFilter();
 
     /**
      * Prediction Predicts the state and the state covariance
      * using the process model
-     * @param delta_T Time between k and k+1 in s
      */
     void Predict();
 
