@@ -65,30 +65,11 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     * update the state using Extended Kalman Filter equations
   */
 
-  // measurement covariance matrix - laser
-  float px = x_(0);
-  float py = x_(1);
-  float vx = x_(2);
-  float vy = x_(3);
-
-  if (px == 0 && py == 0) {
-    std::cout << "Divide by zero error in Update EKF!" << std::endl;
-    return;
-  }
-
-  float px2 = pow(px, 2);
-  float py2 = pow(py, 2);
-
-  MatrixXd Hj(3, 4);
-  Hj << px / sqrt(px2 + py2), py / sqrt(px2 + py2), 0, 0,
-        -py / (px2 + py2), px / (px2 + py2), 0, 0,
-        py*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px*(vx * py - vy * px) / (pow(px2 + py2, 1.5)), px / sqrt(px2 + py2), py / sqrt(px2 + py2);
-
   // measurement covariance matrix - radar
-  VectorXd z_pred = Hj * x_;
+  VectorXd z_pred = H_radar_ * x_;
   VectorXd y = z - z_pred; // TODO: y = z - H*x
-  MatrixXd Ht = Hj.transpose();
-  MatrixXd S = Hj * P_ * Ht + R_radar_;
+  MatrixXd Ht = H_radar_.transpose();
+  MatrixXd S = H_radar_ * P_ * Ht + R_radar_;
   MatrixXd Si = S.inverse();
   MatrixXd PHt = P_ * Ht;
   MatrixXd K = PHt * Si;
@@ -96,6 +77,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   x_ = x_ + (K * y); // Update state using measurement
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - K * Hj) * P_; // Update uncertainty covariance
+  P_ = (I - K * H_radar_) * P_; // Update uncertainty covariance
 
 }
