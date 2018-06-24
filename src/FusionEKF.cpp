@@ -58,7 +58,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   // *** Prediction Step ***
 
   // Determine the time elapsed and update the state transition matrix accordingly
-  float dt = measurement_pack.timestamp_ - previous_timestamp_ / 1000000.0;
+  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
   previous_timestamp_ = measurement_pack.timestamp_;
   ekf_.F_(0, 2) = dt; // TODO: Move to kalman filter class method
   ekf_.F_(1, 3) = dt;
@@ -73,9 +73,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   ekf_.Q_ = MatrixXd(4, 4);
   ekf_.Q_ << dt_4 / 4 * noise_ax, 0, dt_3 / 2 * noise_ax, 0,
-          0, dt_4 / 4 * noise_ay, 0, dt_3 / 2 * noise_ay,
-          dt_3 / 2 * noise_ax, 0, dt_2 / 1 * noise_ax, 0,
-          0, dt_3 / 2 * noise_ay, 0, dt_2 / 1 * noise_ay;
+             0, dt_4 / 4 * noise_ay, 0, dt_3 / 2 * noise_ay,
+             dt_3 / 2 * noise_ax, 0, dt_2 / 1 * noise_ax, 0,
+             0, dt_3 / 2 * noise_ay, 0, dt_2 / 1 * noise_ay;
 
   ekf_.Predict();
 
@@ -89,7 +89,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     ekf_.H_radar_ = tools.CalculateJacobian(ekf_.x_);
     // ekf_.UpdateEKF(measurement_pack.raw_measurements_); // Radar updates
-  } else {
+  } else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
     ekf_.Update(measurement_pack.raw_measurements_); // Laser updates
   }
 
