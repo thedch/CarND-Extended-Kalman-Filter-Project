@@ -27,6 +27,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /*****************************************************************************
    *  Initialization
    ****************************************************************************/
+
+  if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
+    return; // Ignore radar measurements entirely
+  }
+
   if (!is_initialized_) {
     /**
     TODO:
@@ -37,7 +42,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 0, 0, 0, 0;
+    ekf_.x_ << 0, 0, 5, 0;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
       int rho = measurement_pack.raw_measurements_(0);
@@ -65,9 +70,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   // Update the process noise covariance
   // TODO: Move to kalman filter class method
-  int dt_2 = dt * dt;
-  int dt_3 = dt_2 * dt;
-  int dt_4 = dt_3 * dt;
+  float dt_2 = dt * dt;
+  float dt_3 = dt_2 * dt;
+  float dt_4 = dt_3 * dt;
   int noise_ax = 9;
   int noise_ay = 9;
 

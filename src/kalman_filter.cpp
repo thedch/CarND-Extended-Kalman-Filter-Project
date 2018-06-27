@@ -54,7 +54,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   MatrixXd PHt = P_ * Ht; // 4x2 = 4x4 * 4x2
   MatrixXd K = PHt * Si; // 4x2 = 4x2 * 2x2
 
-  x_ = x_ + (K * y); // 4x1 = 4x1 + 4x2 * 2x1
+  x_ = x_ + (K * y); // 4x1 = 4x1 + (4x2 * 2x1)
   long x_size = x_.size(); // 4
   MatrixXd I = MatrixXd::Identity(x_size, x_size); // 4x4
   P_ = (I - K * H_laser_) * P_; // 4x4 = (4x4 - 4x2 * 2x4) * 4x4
