@@ -28,10 +28,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Initialization
    ****************************************************************************/
 
-  if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    return; // Ignore radar measurements entirely
-  }
-
   if (!is_initialized_) {
     /**
     TODO:
@@ -86,14 +82,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   // ***  Update Step ***
 
-  /**
-   TODO:
-     * Use the sensor type to perform the update step.
-     * Update the state and covariance matrices.
-   */
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     ekf_.H_radar_ = tools.CalculateJacobian(ekf_.x_);
-    // ekf_.UpdateEKF(measurement_pack.raw_measurements_); // Radar updates
+    ekf_.UpdateEKF(measurement_pack.raw_measurements_); // Radar updates
   } else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
     ekf_.Update(measurement_pack.raw_measurements_); // Laser updates
   }
