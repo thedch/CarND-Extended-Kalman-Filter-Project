@@ -10,15 +10,7 @@ using std::vector;
 
 FusionEKF::FusionEKF() {
   is_initialized_ = false;
-
   previous_timestamp_ = 0;
-
-  /**
-  TODO:
-    * Finish initializing the FusionEKF.
-    * Set the process and measurement noises
-  */
-
 }
 
 FusionEKF::~FusionEKF() {}
@@ -29,14 +21,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    ****************************************************************************/
 
   if (!is_initialized_) {
-    /**
-    TODO:
-      * Initialize the state ekf_.x_ with the first measurement.
-      * Create the covariance matrix.
-      * Remember: you'll need to convert radar from polar to Cartesian coordinates.
-    */
-
-    cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 0, 0, 5, 0;
 
@@ -61,22 +45,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   // Determine the time elapsed and update the state transition matrix accordingly
   float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
   previous_timestamp_ = measurement_pack.timestamp_;
-  ekf_.F_(0, 2) = dt; // TODO: Move to kalman filter class method
-  ekf_.F_(1, 3) = dt;
-
-  // Update the process noise covariance
-  // TODO: Move to kalman filter class method
-  float dt_2 = dt * dt;
-  float dt_3 = dt_2 * dt;
-  float dt_4 = dt_3 * dt;
-  int noise_ax = 9;
-  int noise_ay = 9;
-
-  ekf_.Q_ = MatrixXd(4, 4);
-  ekf_.Q_ << dt_4 / 4 * noise_ax, 0, dt_3 / 2 * noise_ax, 0,
-             0, dt_4 / 4 * noise_ay, 0, dt_3 / 2 * noise_ay,
-             dt_3 / 2 * noise_ax, 0, dt_2 / 1 * noise_ax, 0,
-             0, dt_3 / 2 * noise_ay, 0, dt_2 / 1 * noise_ay;
+  ekf_.Update_F_with_dt(dt);
+  ekf_.Update_Q_with_dt(dt);
 
   ekf_.Predict();
 

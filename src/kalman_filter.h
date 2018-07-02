@@ -51,6 +51,10 @@ class KalmanFilter {
      */
     void UpdateEKF(const Eigen::VectorXd &z);
 
+    void Update_F_with_dt(float dt);
+
+    void Update_Q_with_dt(float dt);
+
 };
 
 #endif /* KALMAN_FILTER_H_ */

@@ -36,6 +36,8 @@ KalmanFilter::KalmanFilter() {
         0, 0, 1, 0,
         0, 0, 0, 1;
 
+  Q_ = MatrixXd(4, 4);
+
 }
 
 KalmanFilter::~KalmanFilter() {}
@@ -103,4 +105,22 @@ double normalize_angle(double angle) {
     angle += 2*M_PI;
   }
   return angle;
+}
+
+void KalmanFilter::Update_F_with_dt(float dt) {
+  F_(0, 2) = dt; // TODO: Move to kalman filter class method
+  F_(1, 3) = dt;
+}
+
+void KalmanFilter::Update_Q_with_dt(float dt) {
+  float dt_2 = dt * dt;
+  float dt_3 = dt_2 * dt;
+  float dt_4 = dt_3 * dt;
+  int noise_ax = 9;
+  int noise_ay = 9;
+
+  Q_ << dt_4 / 4 * noise_ax, 0, dt_3 / 2 * noise_ax, 0,
+             0, dt_4 / 4 * noise_ay, 0, dt_3 / 2 * noise_ay,
+             dt_3 / 2 * noise_ax, 0, dt_2 / 1 * noise_ax, 0,
+             0, dt_3 / 2 * noise_ay, 0, dt_2 / 1 * noise_ay;
 }
